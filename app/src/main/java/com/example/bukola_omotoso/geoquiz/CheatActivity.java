@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
     private static final String EXTRA_QUIZ_ANSWER = "com.example.bukola_omotoso.geoquiz.extra_quiz_answer";
     private static final String EXTRA_ANSWER_SHOWN = "com.example.bukola_omotoso.geoquiz.answer_shown";
+    private static final String KEY_ANSWER = "answer";
     private boolean answer;
     private Button cheatButton;
     private TextView answerText;
@@ -22,15 +23,18 @@ public class CheatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cheat);
         cheatButton = (Button) findViewById(R.id.show_answer_button);
         answerText = (TextView) findViewById(R.id.answer_text);
-        answer = getIntent().getBooleanExtra(EXTRA_QUIZ_ANSWER, false);
+        if (savedInstanceState != null) {
+            answer = savedInstanceState.getBoolean(EXTRA_QUIZ_ANSWER,false);
+            displayAnswer();
+        }
+        else {
+            answer = getIntent().getBooleanExtra(EXTRA_QUIZ_ANSWER, false);
+        }
         Log.d("ANSWER_CHEAT",answer+"");
         cheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (answer == true)
-                    answerText.setText(R.string.true_button);
-                else
-                    answerText.setText(R.string.false_button);
+                displayAnswer();
                 setAnswerShownResult(true);
             }
         });
@@ -50,6 +54,19 @@ public class CheatActivity extends AppCompatActivity {
 
     public static boolean wasAnswerShown(Intent intent) {
         return intent.getBooleanExtra(EXTRA_ANSWER_SHOWN,false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstantState)  {
+        super.onSaveInstanceState(savedInstantState);
+        savedInstantState.putBoolean(EXTRA_QUIZ_ANSWER,answer);
+    }
+
+    private void displayAnswer() {
+        if (answer == true)
+            answerText.setText(R.string.true_button);
+        else
+            answerText.setText(R.string.false_button);
     }
 
 }
