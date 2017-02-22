@@ -12,7 +12,6 @@ import android.widget.TextView;
 public class CheatActivity extends AppCompatActivity {
     private static final String EXTRA_QUIZ_ANSWER = "com.example.bukola_omotoso.geoquiz.extra_quiz_answer";
     private static final String EXTRA_ANSWER_SHOWN = "com.example.bukola_omotoso.geoquiz.answer_shown";
-    private static final String KEY_ANSWER = "answer";
     private boolean answer;
     private Button cheatButton;
     private TextView answerText;

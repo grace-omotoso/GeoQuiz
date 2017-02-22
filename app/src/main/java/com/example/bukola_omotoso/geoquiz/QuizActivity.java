@@ -19,6 +19,8 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String KEY_CHEATED = "cheated";
+    private static final String CHEATED_INDEX = "cheated_index";
     private Button trueButton;
     private Button falseButton;
     private Button previousButton;
@@ -52,6 +54,7 @@ public class QuizActivity extends AppCompatActivity {
         if (savedInstanceState != null)
         {
             questionIndex = savedInstanceState.getInt(KEY_INDEX,0);
+            isCheater = savedInstanceState.getBoolean(KEY_CHEATED);
         }
         updateQuestion();
         trueButton.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +108,7 @@ public class QuizActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstantState)   {
         super.onSaveInstanceState(savedInstantState);
         savedInstantState.putInt(KEY_INDEX,questionIndex);
+        savedInstantState.putBoolean(KEY_CHEATED,isCheater);
     }
 
 
@@ -136,7 +140,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private void displayAnswerFeedback(boolean answerPressed)    {
         answer = questionBank[questionIndex].isAnswerTrue();
-        if (isCheater)  {
+        if (isCheater || questionIndex == getIntent().getIntExtra(CHEATED_INDEX,0))  {
             messageResId = R.string.judgment_toast;
         }
         else
@@ -154,8 +158,6 @@ public class QuizActivity extends AppCompatActivity {
         questionText.setText(questionBank[questionIndex].getTextResId());
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent)   {
         if (resultCode != Activity.RESULT_OK)   {
@@ -166,6 +168,7 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             isCheater = CheatActivity.wasAnswerShown(intent);
+            intent.putExtra(CHEATED_INDEX,questionIndex);
         }
     }
 }
