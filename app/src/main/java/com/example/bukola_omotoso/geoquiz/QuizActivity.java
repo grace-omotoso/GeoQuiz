@@ -1,5 +1,7 @@
 package com.example.bukola_omotoso.geoquiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,10 +23,13 @@ public class QuizActivity extends AppCompatActivity {
     private Button falseButton;
     private Button previousButton;
     private Button nextButton;
+    private Button cheatButton;
     private TextView questionText;
     private int questionIndex = 0 ;
     private int messageResId;
-    boolean answer;
+    private boolean answer;
+    private boolean isCheater;
+    private static final int REQUEST_CODE_CHEAT = 0;
     private Question[] questionBank = {
             new Question(R.string.question_africa,false),
             new Question(R.string.question_americas,true),
@@ -42,6 +47,7 @@ public class QuizActivity extends AppCompatActivity {
         falseButton = (Button) findViewById(R.id.false_button);
         previousButton = (Button) findViewById(R.id.previous_button);
         nextButton = (Button) findViewById(R.id.next_button);
+        cheatButton = (Button) findViewById(R.id.cheat_button);
         questionText = (TextView) findViewById(R.id.question_text);
         if (savedInstanceState != null)
         {
@@ -66,6 +72,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 questionIndex = (questionIndex+1) % questionBank.length;
+                isCheater = false;
                 updateQuestion();
             }
         });
@@ -79,6 +86,17 @@ public class QuizActivity extends AppCompatActivity {
                     questionIndex = (questionIndex - 1) + questionBank.length;
                 }
                 updateQuestion();
+            }
+        });
+
+        cheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                answer = questionBank[questionIndex].isAnswerTrue();
+                Log.d("ANSWER",answer+"");
+                Intent intent = CheatActivity.newIntent(QuizActivity.this,answer);
+                //startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_CHEAT);
             }
         });
     }
@@ -118,6 +136,11 @@ public class QuizActivity extends AppCompatActivity {
 
     private void displayAnswerFeedback(boolean answerPressed)    {
         answer = questionBank[questionIndex].isAnswerTrue();
+        if (isCheater)  {
+            messageResId = R.string.judgment_toast;
+        }
+        else
+
         if (answer == answerPressed) {
             messageResId = R.string.correct_toast;
         }
@@ -129,5 +152,20 @@ public class QuizActivity extends AppCompatActivity {
 
     private void updateQuestion()  {
         questionText.setText(questionBank[questionIndex].getTextResId());
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent)   {
+        if (resultCode != Activity.RESULT_OK)   {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT)  {
+            if (intent == null) {
+                return;
+            }
+            isCheater = CheatActivity.wasAnswerShown(intent);
+        }
     }
 }

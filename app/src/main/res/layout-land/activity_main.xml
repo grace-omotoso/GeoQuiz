@@ -33,13 +33,20 @@
             android:text="@string/false_button"/>
     </LinearLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cheat_button"
+        android:text="@string/cheat_button"
+        android:layout_gravity="bottom|center"/>
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/previous_button"
         android:text="@string/previous_button"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|left"
         android:drawablePadding="4dp"
         android:drawableLeft="@drawable/ic_navigate_before_black_24dp"/>
 
